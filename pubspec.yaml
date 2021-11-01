@@ -1,4 +1,4 @@
-name: LuStore
+name: lustore
 version: 1.0.0+1
 publish_to: none
 description: A new Flutter project.
@@ -18,6 +18,8 @@ dependencies:
   flutter_staggered_grid_view: 0.4.1
   brasil_fields: 1.2.0
   get: 4.3.8
+  numeric_keyboard: 1.1.0
+  syncfusion_flutter_charts: 19.3.47
   flutter: 
     sdk: flutter
 

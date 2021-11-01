@@ -1,8 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:LuStore/app/api/api_user.dart';
-import 'package:LuStore/app/model/category.dart';
+import 'package:lustore/app/api/api_user.dart';
+import 'package:lustore/app/model/category.dart';
 
 
 class ApiCategories extends ApiUser {
@@ -47,14 +47,14 @@ class ApiCategories extends ApiUser {
     if (response.statusCode == 200) {
       return true;
     } else {
-      return jsonDecode(jsonEncode(response.body));
+      return jsonDecode(response.body);
     }
   }
 
-  Future<dynamic> delete(String id) async {
+  Future<dynamic> delete(int id) async {
     String token = await refreshJwt();
     final response = await http.delete(
-      Uri.parse(ApiUser.url + "category/delete/" + id),
+      Uri.parse(ApiUser.url + "category/delete/" + id.toString()),
       headers: <String, String>{'Authorization': 'Bearer ' + token},
     );
     if (response.statusCode == 200) {

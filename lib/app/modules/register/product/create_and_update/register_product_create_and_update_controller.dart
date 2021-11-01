@@ -1,12 +1,13 @@
+import 'package:lustore/app/modules/register/product/register_product_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'dart:io';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:LuStore/app/api/api_upload.dart';
-import 'package:LuStore/app/model/category.dart';
-import 'package:LuStore/app/model/image_controller.dart';
-import 'package:LuStore/app/model/product.dart';
+import 'package:lustore/app/api/api_upload.dart';
+import 'package:lustore/app/model/category.dart';
+import 'package:lustore/app/model/image_controller.dart';
+import 'package:lustore/app/model/product.dart';
 
 class RegisterProductCreateAndUpdateController extends GetxController {
   TextEditingController cod = TextEditingController();
@@ -19,6 +20,7 @@ class RegisterProductCreateAndUpdateController extends GetxController {
       decimalSeparator: ',', thousandSeparator: '.', precision: 2);
   TextEditingController qts = TextEditingController();
   ImagePicker image = ImagePicker();
+  RegisterProductController registerProduct = RegisterProductController();
   Category category = Category();
   Product product = Product();
   ApiUpload upload = ApiUpload();
@@ -38,8 +40,9 @@ class RegisterProductCreateAndUpdateController extends GetxController {
     }
     await getAllCategories();
     onLoadingFinalized.value = true;
-
   }
+
+
 
   @override
   void onClose() {
@@ -61,11 +64,11 @@ class RegisterProductCreateAndUpdateController extends GetxController {
         ? Get.arguments["costValue"]
         : double.parse(Get.arguments["costValue"].toString());
 
-      if(_product["image"] != null){
-        fileImage.value = _product["image"].toString();
+      if(_product["image"].length != 0){
+        fileImage.value = _product["image"][0]["image"];
       }
       id = _product["id"];
-      stringCategory.value = _product["id_category"].toString();
+      stringCategory.value = _product["category"]["id"].toString();
       cod.text = _product["code"].toString();
       productName.text = _product["product"].toString();
       description.text = _product["description"].toString();
@@ -99,19 +102,15 @@ class RegisterProductCreateAndUpdateController extends GetxController {
     product.saleValue = value.text.contains(".")
         ? double.parse(value.text.replaceAll(".", "").replaceAll(",", "."))
         : double.parse(value.text.replaceAll(",", "."));
-    product.size = size.text;
+    product.size = int.parse(size.text);
     product.qts = int.parse(qts.text);
     product.category = Category(id: int.parse(stringCategory.toString()));
     product.image = [
     ImageController(image: _image)
     ];
 
-    if(typeAction.value == "create"){
-      return await product.create(product);
-    }
-    if(typeAction.value == "update"){
-      return await product.update(product,id);
-    }
+    if(typeAction.value == "create") return await product.create(product);
+    if(typeAction.value == "update") return await product.update(product,id);
 
   }
 

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:LuStore/app/theme/loading_style.dart';
+import 'package:lustore/app/theme/loading_style.dart';
 import 'package:get/get.dart';
 import 'register_category_controller.dart';
-import 'package:LuStore/app/routes/app_pages.dart';
 
 class RegisterCategoryView extends GetView<RegisterCategoryController> {
   const RegisterCategoryView({Key? key}) : super(key: key);
@@ -14,10 +13,19 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.black),
         backgroundColor: backgroundColorLogo,
-        title: const Text('Cadastro de categorias',  style: styleColorDark,),
+        title: const Text(
+          'Cadastro de categorias',
+          style: styleColorDark,
+        ),
       ),
-      floatingActionButton: floatingButton(),
-      body: categories(),
+      floatingActionButton: floatingButton(context),
+      body: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+        },
+        child: categories(),
+      ),
     );
   }
 
@@ -31,8 +39,7 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
         );
       }
       return ListView.separated(
-        separatorBuilder: (context, index) =>
-        const Divider(
+        separatorBuilder: (context, index) => const Divider(
           color: whiteConstColor,
           height: 1,
         ),
@@ -41,71 +48,21 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
           var _category = controller.categories[index];
           return ListTile(
             onLongPress: () {
-              dialogActionProduct(context, _category["id_product"], index);
+              dialogActionCategory(context, _category, index);
             },
             onTap: () {
-
+              controller.type = "update";
+              controller.nameCategory.text = _category["category"];
+              dialogAction(context, id: _category["id"]);
             },
-            title: product(_category),
+            title: category(_category),
           );
         },
       );
     });
   }
 
-  void dialogActionProduct(context, _category, index) {
-    Get.dialog(AlertDialog(
-      content: ListTile(
-        onTap: () {
-          Get.back();
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context){
-                return AlertDialog(
-                  content: const Text("Deseja realmente excluir o produto ?"),
-                  actions: [
-                    ElevatedButton(
-                        style:
-                        ElevatedButton.styleFrom(
-                          minimumSize: const Size(100, 50),
-                          primary: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                        ),
-                        onPressed: () {
-                          Get.back();
-                        },
-                        child: const Text(
-                          "NÃO", style: TextStyle(color: Colors.black),)),
-                    ElevatedButton(
-                        style:
-                        ElevatedButton.styleFrom(minimumSize: const Size(100, 50)),
-                        onPressed: () async{
-                          // loading(context);
-                          // await 1.delay();
-                          // var _response = await controller.deleteProduct(_product);
-                          // if(_response != true){
-                          //   Get.back();
-                          //   Get.back();
-                          //   error(context, _response["error"].toString());
-                          // }else{
-                          //   Get.back();
-                          //   Get.back();
-                          //   controller.products.removeAt(index);
-                          // }
-                        },
-                        child: const Text("SIM"))
-                  ],
-                );
-              }
-          );
-        },
-        title: Text("Excluir Categoria."),
-      ),
-    ));
-  }
-
-  Widget product(_product) {
+  Widget category(_category) {
     return Row(
       children: <Widget>[
         Container(
@@ -116,50 +73,169 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
             color: const Color.fromRGBO(31, 31, 31, 1.0),
           ),
           margin: const EdgeInsets.only(top: 5, bottom: 5),
-          child: _product["image"] != null
-              ? Image.network(
-            _product["image"],
-            fit: BoxFit.fill,
-          )
-              : const Align(
-            alignment: Alignment.center,
-            child: Text("sa", style: colorAndSizeRegisterProduct),
-          ),
+          child: const Text("sa", style: colorAndSizeRegisterProduct),
         ),
         Expanded(
           child: ListTile(
-            title: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                _product["qts"].toString(),
-                style: colorAndSizeRegisterProduct,
-              ),
-            ),
-            subtitle: Text(
-              _product["product"],
+            title: Text(
+              _category["category"],
               style: colorAndSizeRegisterProduct,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              softWrap: false,
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 30),
-          child: Text(controller.formatter.format(_product["saleValue"]),
-              style: colorAndSizeRegisterProduct),
         ),
       ],
     );
   }
 
-  Widget floatingButton() {
+  void dialogActionCategory(context, _category, index) {
+    Get.dialog(AlertDialog(
+        content: SizedBox(
+      height: 130,
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            onTap: () {
+              Get.back();
+              controller.type = "update";
+              controller.nameCategory.text = _category["category"];
+              dialogAction(context, id: _category["id"]);
+            },
+            title: const Text("Editar Categoria"),
+          ),
+          const Divider(
+            color: backgroundColorDark,
+          ),
+          ListTile(
+            onTap: () {
+              Get.back();
+              deleteCategory(context, _category, index);
+            },
+            title: const Text("Excluir Categoria."),
+          ),
+        ],
+      ),
+    )));
+  }
+
+  void deleteCategory(context, _category, index) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: const Text("Deseja realmente excluir o produto ?"),
+            actions: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    primary: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                  ),
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: const Text(
+                    "NÃO",
+                    style: TextStyle(color: Colors.black),
+                  )),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(100, 50)),
+                  onPressed: () async {
+                    loading(context);
+                    controller.type = "delete";
+                    await 1.delay();
+                    var _response = await controller.createdOrUpdateOrDelete(
+                        id: _category["id"]);
+                    if (_response != true) {
+                      Get.back();
+                      Get.back();
+                      error(context, _response["error"].toString());
+                    } else {
+                      Get.back();
+                      Get.back();
+                      controller.categories.removeAt(index);
+                    }
+                  },
+                  child: const Text("SIM"))
+            ],
+          );
+        });
+  }
+
+  Widget floatingButton(context) {
     return FloatingActionButton(
       onPressed: () {
-
+        controller.type = "create";
+        dialogAction(context);
       },
       child: const Icon(Icons.add, color: whiteConstColor),
       backgroundColor: styleColorBlue,
     );
+  }
+
+  void dialogAction(context, {id}) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              actions: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(100, 50),
+                      primary: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                    ),
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text(
+                      "Cancelar",
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                    )),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(100, 50)),
+                    onPressed: () async {
+                      loading(context);
+                      await 1.delay();
+                      var _response =
+                          await controller.createdOrUpdateOrDelete(id: id);
+                      if (_response != true) {
+                        Get.back();
+
+                        error(context, _response["error"].toString());
+                      } else {
+                        if (_response == true) {
+                          controller.nameCategory.text = "";
+                          controller.inLoading.value = true;
+                          controller.categories.clear();
+                          await controller.getAllCategories();
+                          Get.back();
+                          Get.back();
+                        }
+                      }
+                    },
+                    child: const Text(
+                      "Salva",
+                      style: TextStyle(fontSize: 18),
+                    ))
+              ],
+              content: TextField(
+                controller: controller.nameCategory,
+                decoration: const InputDecoration(
+                  label: Text(
+                    "Categoria",
+                    style: TextStyle(color: backgroundColorDark, fontSize: 16),
+                  ),
+                  border: InputBorder.none,
+                  enabledBorder: enableBorderInline,
+                  errorBorder: errorBorderInline,
+                  focusedErrorBorder: focusBorderInline,
+                  focusedBorder: focusBorderInline,
+                ),
+              ));
+        });
   }
 }

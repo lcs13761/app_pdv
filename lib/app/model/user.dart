@@ -1,4 +1,4 @@
-import 'package:LuStore/app/api/api_user.dart';
+import 'package:lustore/app/api/api_user.dart';
 
 class User extends ApiUser{
   String? email;

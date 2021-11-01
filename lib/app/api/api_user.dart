@@ -3,8 +3,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'dart:convert';
-import 'package:LuStore/app/repository/IApi_user.dart';
-import 'package:LuStore/app/model/user.dart';
+import 'package:lustore/app/repository/IApi_user.dart';
+import 'package:lustore/app/model/user.dart';
 
 class ApiUser implements IApiUser{
   final store = GetStorage();
@@ -64,12 +64,13 @@ class ApiUser implements IApiUser{
       },
     );
     if (response.statusCode == 200) {
-      var _token = jsonDecode(response.body)["token"];
+      var _token = jsonDecode(response.body)["result"];
       await store.write("token",_token);
       return _token;
     } else {
       Get.offNamed("/login");
-      throw Exception("error na gercao do token");
+      store.remove("remember");
+      throw Exception("error na gerção do token");
     }
   }
 

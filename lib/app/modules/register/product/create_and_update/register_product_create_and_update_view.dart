@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:LuStore/app/theme/loading_style.dart';
+import 'package:lustore/app/theme/loading_style.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'register_product_create_and_update_controller.dart';
@@ -32,11 +32,9 @@ class RegisterProductCreateAndUpdateView
                       loading(context);
                       var _response = await controller.submitTypeAction();
                       await 1.delay();
-                      print(_response);
                       Get.back();
-                      return;
                       if (_response == true) {
-                        success(context, "back");
+                        success("sucesso",context, action: "back");
                       } else {
                         error(context, _response["error"]);
                       }
@@ -92,7 +90,10 @@ class RegisterProductCreateAndUpdateView
                         controller.qts, format: [
                       FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                     ]),
-                    textField("Tamanho", TextInputType.number, controller.size),
+                   Container(
+                     margin:const EdgeInsets.only(bottom: 50),
+                     child:  textField("Tamanho", TextInputType.number, controller.size),
+                   )
                   ],
                 ),
               ),

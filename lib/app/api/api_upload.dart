@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-import 'package:LuStore/app/api/api_user.dart';
+import 'package:lustore/app/api/api_user.dart';
 import 'package:http/http.dart' as http;
 
 class ApiUpload extends ApiUser {

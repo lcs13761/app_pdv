@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:LuStore/app/routes/app_pages.dart';
-import 'package:LuStore/app/theme/loading_style.dart';
+import 'package:lustore/app/routes/app_pages.dart';
+import 'package:lustore/app/theme/loading_style.dart';
 import 'package:get/get.dart';
-import 'package:LuStore/app/modules/drawer/drawer.dart';
+import 'package:lustore/app/modules/drawer/drawer.dart';
 import 'register_controller.dart';
 
 class RegisterView extends GetView<RegisterController> {
@@ -17,7 +17,7 @@ class RegisterView extends GetView<RegisterController> {
         title: const Text("Cadastros", style: styleColorDark),
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      drawer: DrawerView().drawer(context),
+      drawer: DrawerView().drawer(context,route: "Cadastros"),
       body: bodySelectRegister(),
     );
   }

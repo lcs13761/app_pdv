@@ -82,15 +82,18 @@ void error(context,String text) {
 }
 
 
-void success(context,action) {
+void success(String text,context,{action}) {
   CoolAlert.show(
       onConfirmBtnTap: () {
         if (action == "back") {
           Get.back();
           Get.back();
+        }else{
+          Get.back();
         }
       },
       context: context,
+      text: text,
       width: 400,
       type: CoolAlertType.success,
       animType: CoolAlertAnimType.scale,

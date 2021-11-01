@@ -1,8 +1,9 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:LuStore/app/routes/app_pages.dart';
-import 'package:LuStore/app/theme/loading_style.dart';
+import 'package:lustore/app/routes/app_pages.dart';
+import 'package:lustore/app/theme/loading_style.dart';
 import 'package:get/get.dart';
 import 'register_product_controller.dart';
 
@@ -46,11 +47,11 @@ class RegisterProductView extends GetView<RegisterProductController> {
           var _product = controller.products[index];
           return ListTile(
             onLongPress: () {
-              dialogActionProduct(context, _product["id_product"], index);
+              dialogActionProduct(context, _product["id"], index);
             },
             onTap: () {
               Get.toNamed(Routes.REGISTER_PRODUCT_CREATE_AND_UPDATE,
-                  arguments: _product);
+                  arguments: _product)?.whenComplete(() => unawaited(controller.getProducts()));
             },
             title: product(_product),
           );
@@ -59,7 +60,7 @@ class RegisterProductView extends GetView<RegisterProductController> {
     });
   }
 
-  void dialogActionProduct(context, _product, index) {
+  void dialogActionProduct(context, _id, index) {
     Get.dialog(AlertDialog(
       content: ListTile(
         onTap: () {
@@ -89,11 +90,11 @@ class RegisterProductView extends GetView<RegisterProductController> {
                         onPressed: () async{
                           loading(context);
                           await 1.delay();
-                          var _response = await controller.deleteProduct(_product);
-                          if(_response != true){
+                          var _response = await controller.deleteProduct(_id);
+                         if(_response != true){
                             Get.back();
                             Get.back();
-                            error(context, _response["error"].toString());
+                            error(context, _response["error"]);
                           }else{
                             Get.back();
                             Get.back();
@@ -106,7 +107,7 @@ class RegisterProductView extends GetView<RegisterProductController> {
               }
           );
         },
-        title: Text("Excluir Produto."),
+        title: const Text("Excluir Produto."),
       ),
     ));
   }
@@ -122,9 +123,9 @@ class RegisterProductView extends GetView<RegisterProductController> {
             color: const Color.fromRGBO(31, 31, 31, 1.0),
           ),
           margin: const EdgeInsets.only(top: 5, bottom: 5),
-          child: _product["image"] != null
+          child: _product["image"].length != 0
               ? Image.network(
-            _product["image"],
+            _product["image"][0]["image"],
             fit: BoxFit.fill,
           )
               : const Align(
@@ -162,7 +163,7 @@ class RegisterProductView extends GetView<RegisterProductController> {
   Widget floatingButton() {
     return FloatingActionButton(
       onPressed: () {
-        Get.toNamed(Routes.REGISTER_PRODUCT_CREATE_AND_UPDATE);
+        Get.toNamed(Routes.REGISTER_PRODUCT_CREATE_AND_UPDATE)?.whenComplete(() => unawaited(controller.getProducts()));
       },
       child: const Icon(Icons.add, color: whiteConstColor),
       backgroundColor: styleColorBlue,

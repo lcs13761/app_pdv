@@ -1,4 +1,4 @@
-import 'package:LuStore/app/model/user.dart';
+import 'package:lustore/app/model/user.dart';
 
 abstract class IApiUser{
 

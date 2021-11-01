@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:LuStore/app/theme/loading_style.dart';
+import 'package:lustore/app/theme/loading_style.dart';
 import 'login_controller.dart';
 
 class LoginView extends GetView<LoginController> {

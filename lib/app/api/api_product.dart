@@ -1,8 +1,8 @@
-import 'package:LuStore/app/api/api_user.dart';
+import 'package:lustore/app/api/api_user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:LuStore/app/model/product.dart';
+import 'package:lustore/app/model/product.dart';
 
 class ApiProduct extends ApiUser{
 
@@ -50,7 +50,7 @@ class ApiProduct extends ApiUser{
   Future<dynamic> update(Product data,id) async{
     String token = await refreshJwt();
     final response = await http.put(
-      Uri.parse(ApiUser.url + "product/update/" + id),
+      Uri.parse(ApiUser.url + "product/update/" + id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + token

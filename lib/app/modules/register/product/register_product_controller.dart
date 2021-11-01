@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:LuStore/app/model/product.dart';
+import 'package:lustore/app/model/product.dart';
 import 'package:intl/intl.dart';
 
 
@@ -17,18 +17,17 @@ class RegisterProductController extends GetxController {
   }
 
   Future getProducts() async{
-
+        inLoading.value = true;
+        products.clear();
         var _response = await product.getAllProducts();
         inLoading.value = false;
         products.addAll(_response["result"]);
   }
 
-  Future deleteProduct(_product) async{
+  Future deleteProduct(_id) async{
 
-    print(_product);
-      var _response = await product.delete(_product.toString());
-      print(_response);
-      return _response;
+    return await product.delete(_id.toString());
+
   }
 
 }
