@@ -1,7 +1,11 @@
 import 'package:lustore/app/api/api_sale.dart';
+import 'package:lustore/app/core/model.dart';
 import 'package:lustore/app/model/product.dart';
 
-class Sale extends ApiSales{
+class Sale extends Model{
+
+  @override
+  String action = "sale";
   String? client;
   double discount = 0.0;
   Product product = Product();

@@ -31,7 +31,7 @@ class HomeListerSalesProductsController extends GetxController {
    actionProductSale(index) async{
         if(action == "update"){
           sale.product = Product(id: products[index]["id"],qts: int.parse(qts.text));
-          var _response  = await sale.update(sale);
+          var _response  = await sale.update(sale,products[index]["id"]);
           if(_response["result"].length != 0){
            var  _update = products[index];
            _update["qts"] = int.parse(qts.text);
@@ -40,7 +40,7 @@ class HomeListerSalesProductsController extends GetxController {
         }
 
         if(action == "delete"){
-            var _response = await sale.deleteOne(products[index]["id"].toString());
+            var _response = await sale.destroy(products[index]["id"].toString());
             if(_response != true){
               print(_response);
               return;

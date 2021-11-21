@@ -17,7 +17,7 @@ class ReportsView extends GetView<ReportsController> {
       backgroundColor: backgroundColorDark,
       appBar: AppBar(
         backgroundColor: backgroundColorLogo,
-        title: const Text("Cadastros", style: styleColorDark),
+        title: const Text("Relatórios", style: styleColorDark),
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       drawer: DrawerView().drawer(context,route: "Relatórios"),
@@ -49,7 +49,7 @@ class ReportsView extends GetView<ReportsController> {
         yearMoney(),
       ],
       staggeredTiles: const [
-        StaggeredTile.count(4, 3),
+        StaggeredTile.count(4, 5),
         StaggeredTile.count(4, 3),
         StaggeredTile.count(4, 3),
         StaggeredTile.count(4, 3),
@@ -65,30 +65,30 @@ class ReportsView extends GetView<ReportsController> {
               numberFormat: NumberFormat.simpleCurrency(locale: "pt-BR")),
           title: ChartTitle(
               text: "Estatistica Mensal " + DateTime.now().year.toString()),
-          legend: Legend(isVisible: true),
+          legend: Legend(isVisible: true,position: LegendPosition.bottom),
           backgroundColor: const Color.fromRGBO(248, 248, 248, 1),
           enableAxisAnimation: true,
           borderWidth: 1,
           tooltipBehavior: TooltipBehavior(enable: true),
           series: <CartesianSeries<dynamic, String>>[
-            ColumnSeries<dynamic, String>(
-                width: 0.5,
-                spacing: 0.2,
+            BarSeries<dynamic, String>(
+                width: 1,
+                spacing: 0.1,
                 dataSource: controller.data.toList(),
                 xValueMapper: (dynamic sales, _) => sales.year,
                 yValueMapper: (dynamic sales, _) => sales.cost,
                 name: 'custo do mês',
                 // Enable data label
-                dataLabelSettings: const DataLabelSettings(isVisible: true)),
-            ColumnSeries<dynamic, String>(
-                width: 0.5,
-                spacing: 0.2,
+              ),
+            BarSeries<dynamic, String>(
+                width: 1,
+                spacing: 0.1,
                 dataSource: controller.data.toList(),
                 xValueMapper: (dynamic sales, _) => sales.year,
                 yValueMapper: (dynamic sales, _) => sales.sales,
                 name: 'vendas do mês',
                 // Enable data label
-                dataLabelSettings: const DataLabelSettings(isVisible: true))
+                )
           ]);
     });
   }

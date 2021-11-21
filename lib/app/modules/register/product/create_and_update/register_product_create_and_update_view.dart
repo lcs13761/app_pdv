@@ -31,12 +31,16 @@ class RegisterProductCreateAndUpdateView
                     if (_formKey.currentState!.validate()) {
                       loading(context);
                       var _response = await controller.submitTypeAction();
+                      print(_response);
                       await 1.delay();
                       Get.back();
                       if (_response == true) {
-                        success("sucesso",context, action: "back");
+                        success("sucesso", context, action: "back");
                       } else {
-                        error(context, _response["error"]);
+                        controller.errors.clear();
+                        controller.errors.addAll(_response);
+                        //  print( _response.map((key, value) => value[0]).toList());
+                        // error(context, _response);
                       }
                     }
                   },
@@ -45,9 +49,9 @@ class RegisterProductCreateAndUpdateView
               )
             ],
             title: Obx(
-                () =>  controller.typeAction.toString() == "create"
-                    ? const Text('Novo produto', style: styleColorDark)
-                    : const Text('Editar produto', style: styleColorDark),
+              () => controller.typeAction.toString() == "create"
+                  ? const Text('Novo produto', style: styleColorDark)
+                  : const Text('Editar produto', style: styleColorDark),
             ),
             iconTheme: const IconThemeData(color: Colors.black),
           ),
@@ -73,27 +77,29 @@ class RegisterProductCreateAndUpdateView
                       height: 200,
                     ),
                     categorySelect(),
-                    textField("Código", TextInputType.number, controller.cod),
                     textField(
-                        "Produto", TextInputType.text, controller.productName),
+                        "Código", TextInputType.number, controller.cod, 'code'),
+                    textField("Produto", TextInputType.text,
+                        controller.productName, 'product'),
                     textField("Descrição", TextInputType.text,
-                        controller.description),
+                        controller.description, 'description'),
                     textField("Valor de custo", TextInputType.number,
-                        controller.cost,
+                        controller.cost, 'costValue',
                         prefix: const Text("R\$ ",
                             style: TextStyle(color: whiteConstColor))),
                     textField("Valor de venda", TextInputType.number,
-                        controller.value,
+                        controller.value, 'saleValue',
                         prefix: const Text("R\$ ",
                             style: TextStyle(color: whiteConstColor))),
                     textField("Quantidade em estoque", TextInputType.number,
-                        controller.qts, format: [
+                        controller.qts, 'qts', format: [
                       FilteringTextInputFormatter.allow(RegExp("[0-9]"))
                     ]),
-                   Container(
-                     margin:const EdgeInsets.only(bottom: 50),
-                     child:  textField("Tamanho", TextInputType.number, controller.size),
-                   )
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 50),
+                      child: textField("Tamanho", TextInputType.number,
+                          controller.size, 'size'),
+                    )
                   ],
                 ),
               ),
@@ -216,34 +222,51 @@ class RegisterProductCreateAndUpdateView
         ));
   }
 
-  Widget textField(String text, type, controllerName, {format, prefix}) {
-    return Container(
-      margin: const EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
-      child: TextFormField(
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Preencha esse campo";
-          }
-          return null;
-        },
-        keyboardType: type,
-        controller: controllerName,
-        inputFormatters: format,
-        style: const TextStyle(color: whiteConstColor),
-        decoration: InputDecoration(
-          prefix: prefix,
-          label: Text(
-            text,
-            style: const TextStyle(
-                color: Color.fromRGBO(255, 255, 255, 0.6), fontSize: 16),
+  Widget textField(String text, type, controllerName, key, {format, prefix}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          margin: const EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
+          child: TextFormField(
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Preencha esse campo";
+              }
+              return null;
+            },
+            keyboardType: type,
+            controller: controllerName,
+            inputFormatters: format,
+            style: const TextStyle(color: whiteConstColor),
+            decoration: InputDecoration(
+              prefix: prefix,
+              label: Text(
+                text,
+                style: const TextStyle(
+                    color: Color.fromRGBO(255, 255, 255, 0.6), fontSize: 16),
+              ),
+              border: InputBorder.none,
+              enabledBorder: enableBorderInline,
+              errorBorder: errorBorderInline,
+              focusedErrorBorder: focusBorderInline,
+              focusedBorder: focusBorderInline,
+            ),
           ),
-          border: InputBorder.none,
-          enabledBorder: enableBorderInline,
-          errorBorder: errorBorderInline,
-          focusedErrorBorder: focusBorderInline,
-          focusedBorder: focusBorderInline,
         ),
-      ),
+        Obx(() {
+          if (controller.errors.containsKey(key)) {
+            return Container(
+              margin: const EdgeInsets.only(top: 5, bottom: 5, left: 15),
+              child: Text(
+                controller.errors[key][0].toString(),
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
+          }
+          return const Text('');
+        }),
+      ],
     );
   }
 }

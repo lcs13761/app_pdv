@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:lustore/app/modules/register/product/register_product_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -30,12 +32,14 @@ class RegisterProductCreateAndUpdateController extends GetxController {
   RxString stringCategory = "1".obs;
   RxString typeAction = "create".obs;
   RxBool onLoadingFinalized = false.obs;
+  RxMap errors = {}.obs;
 
   @override
   void onInit() async {
     super.onInit();
     if(Get.arguments != null){
       typeAction.value = "update";
+      print(Get.arguments);
       updateType(Get.arguments);
     }
     await getAllCategories();
@@ -51,18 +55,18 @@ class RegisterProductCreateAndUpdateController extends GetxController {
   }
 
   getAllCategories() async {
-    var _categories = await category.getAllCategories();
-    categoryList.addAll(_categories["result"]);
+    var _categories = await category.index();
+    categoryList.addAll(_categories["data"]);
   }
 
   updateType(_product){
-    var valueSale = Get.arguments["saleValue"].toString().contains(".")
-        ? Get.arguments["saleValue"]
-        : double.parse(Get.arguments["saleValue"].toString());
+    var valueSale = _product["saleValue"].toString().contains(".")
+        ? _product["saleValue"]
+        : double.parse(_product["saleValue"].toString());
 
-    var costValue =  Get.arguments["costValue"].toString().contains(".")
+    var costValue =  _product["costValue"].toString().contains(".")
         ? Get.arguments["costValue"]
-        : double.parse(Get.arguments["costValue"].toString());
+        : double.parse(_product["costValue"].toString());
 
       if(_product["image"].length != 0){
         fileImage.value = _product["image"][0]["image"];
@@ -102,14 +106,13 @@ class RegisterProductCreateAndUpdateController extends GetxController {
     product.saleValue = value.text.contains(".")
         ? double.parse(value.text.replaceAll(".", "").replaceAll(",", "."))
         : double.parse(value.text.replaceAll(",", "."));
-    product.size = int.parse(size.text);
+    product.size = size.text;
     product.qts = int.parse(qts.text);
     product.category = Category(id: int.parse(stringCategory.toString()));
     product.image = [
     ImageController(image: _image)
     ];
-
-    if(typeAction.value == "create") return await product.create(product);
+    if(typeAction.value == "create") return await product.store(product);
     if(typeAction.value == "update") return await product.update(product,id);
 
   }

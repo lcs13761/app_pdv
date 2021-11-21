@@ -1,15 +1,22 @@
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:lustore/app/api/api_user.dart';
+import 'package:lustore/app/api/api_auth.dart';
 import 'package:lustore/app/model/category.dart';
+import 'package:lustore/app/boot/config.dart';
+import 'package:lustore/app/repository/iapi_action.dart';
 
 
-class ApiCategories extends ApiUser {
+class ApiCategories implements IApiAction{
 
-  Future<dynamic> getAllCategories() async {
+  ApiAuth user = ApiAuth();
+
+
+
+  @override
+  Future index() async{
     final response = await http.get(
-      Uri.parse(ApiUser.url + "categories"),
+      Uri.parse(url + "category"),
     );
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -18,9 +25,16 @@ class ApiCategories extends ApiUser {
     }
   }
 
-  Future<dynamic> create(Category data) async {
-    String token = await refreshJwt();
-    final response = await http.post(Uri.parse(ApiUser.url + "category/register"),
+  @override
+  Future show(id) {
+    // TODO: implement show
+    throw UnimplementedError();
+  }
+
+  @override
+  Future store(data) async{
+    String token = await user.refreshJwt();
+    final response = await http.post(Uri.parse(url + "category/register"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ' + token
@@ -33,15 +47,16 @@ class ApiCategories extends ApiUser {
     }
   }
 
-  Future<dynamic> update(Category category) async {
-    String token = await refreshJwt();
+  @override
+  Future update(data, id) async{
+    String token = await user.refreshJwt();
     final response = await http.put(
-      Uri.parse(ApiUser.url + "category/update/" + category.id.toString()),
+      Uri.parse(url + "category/update/" + data.id.toString()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + token
       },
-      body: jsonEncode(category),
+      body: jsonEncode(data),
     );
 
     if (response.statusCode == 200) {
@@ -51,10 +66,11 @@ class ApiCategories extends ApiUser {
     }
   }
 
-  Future<dynamic> delete(int id) async {
-    String token = await refreshJwt();
+  @override
+  Future destroy(id) async{
+    String token = await user.refreshJwt();
     final response = await http.delete(
-      Uri.parse(ApiUser.url + "category/delete/" + id.toString()),
+      Uri.parse(url + "category/delete/" + id.toString()),
       headers: <String, String>{'Authorization': 'Bearer ' + token},
     );
     if (response.statusCode == 200) {

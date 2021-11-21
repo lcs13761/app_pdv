@@ -54,7 +54,7 @@ class AppPages {
       children: [
         GetPage(
           name: _Paths.LOGIN_FORGET,
-          page: () => const LoginForgetView(),
+          page: () => LoginForgetView(),
           binding: LoginForgetBinding(),
         ),
       ],

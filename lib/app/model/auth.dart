@@ -1,15 +1,13 @@
-import 'package:lustore/app/api/api_user.dart';
-import 'package:lustore/app/core/model.dart';
+import 'package:lustore/app/api/api_auth.dart';
 
-class User extends Model{
+class Auth extends ApiAuth{
   String? email;
   String? password;
-  @override
-  String action = "user";
 
-  User();
 
-  User.fromJson(Map<String,dynamic> json):
+  Auth();
+
+  Auth.fromJson(Map<String,dynamic> json):
         email = json["email"],
         password = json["password"];
 

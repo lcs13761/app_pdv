@@ -7,6 +7,7 @@ class RegisterCategoryController extends GetxController {
 
    RxBool inLoading = true.obs;
    RxList categories = [].obs;
+   RxMap errors = {}.obs;
    TextEditingController nameCategory = TextEditingController();
    String type = "create";
    NumberFormat formatter = NumberFormat.simpleCurrency();
@@ -19,8 +20,8 @@ class RegisterCategoryController extends GetxController {
   }
 
    getAllCategories() async {
-     var _categories = await category.getAllCategories();
-     categories.addAll(_categories["result"]);
+     var _categories = await category.index();
+     categories.addAll(_categories["data"]);
      inLoading.value = false;
    }
 
@@ -31,9 +32,9 @@ class RegisterCategoryController extends GetxController {
      category.id = id;
      category.category = nameCategory.text;
 
-     if(type == "create") return await category.create(category);
-     if(type == "update") return await category.update(category);
-     if(type == "delete") return await category.delete(id);
+     if(type == "create") return await category.store(category);
+     if(type == "update") return await category.update(category,id);
+     if(type == "delete") return await category.destroy(id);
 
    }
  }

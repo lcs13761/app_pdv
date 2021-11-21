@@ -46,6 +46,7 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
         itemCount: controller.categories.length,
         itemBuilder: (BuildContext context, int index) {
           var _category = controller.categories[index];
+          print(_category);
           return ListTile(
             onLongPress: () {
               dialogActionCategory(context, _category, index);
@@ -73,7 +74,9 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
             color: const Color.fromRGBO(31, 31, 31, 1.0),
           ),
           margin: const EdgeInsets.only(top: 5, bottom: 5),
-          child: const Text("sa", style: colorAndSizeRegisterProduct),
+          child: const Center(
+            child: Text("sa", style: colorAndSizeRegisterProduct),
+          ),
         ),
         Expanded(
           child: ListTile(
@@ -147,10 +150,11 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
                     await 1.delay();
                     var _response = await controller.createdOrUpdateOrDelete(
                         id: _category["id"]);
+                    print(_response);
                     if (_response != true) {
                       Get.back();
                       Get.back();
-                      error(context, _response["error"].toString());
+                      //error(context, _response["error"].toString());
                     } else {
                       Get.back();
                       Get.back();
@@ -203,9 +207,8 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
                       var _response =
                           await controller.createdOrUpdateOrDelete(id: id);
                       if (_response != true) {
-                        Get.back();
-
-                        error(context, _response["error"].toString());
+                          controller.errors.clear();
+                          controller.errors.addAll(_response);
                       } else {
                         if (_response == true) {
                           controller.nameCategory.text = "";
@@ -222,20 +225,29 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
                       style: TextStyle(fontSize: 18),
                     ))
               ],
-              content: TextField(
-                controller: controller.nameCategory,
-                decoration: const InputDecoration(
-                  label: Text(
-                    "Categoria",
-                    style: TextStyle(color: backgroundColorDark, fontSize: 16),
+              content: ListTile(
+                title: TextField(
+                  controller: controller.nameCategory,
+                  decoration: const InputDecoration(
+                    label: Text(
+                      "Categoria",
+                      style: TextStyle(color: backgroundColorDark, fontSize: 16),
+                    ),
+                    border: InputBorder.none,
+                    enabledBorder: enableBorderInline,
+                    errorBorder: errorBorderInline,
+                    focusedErrorBorder: focusBorderInline,
+                    focusedBorder: focusBorderInline,
                   ),
-                  border: InputBorder.none,
-                  enabledBorder: enableBorderInline,
-                  errorBorder: errorBorderInline,
-                  focusedErrorBorder: focusBorderInline,
-                  focusedBorder: focusBorderInline,
                 ),
-              ));
+                subtitle: Obx(() {
+                  if(controller.errors.containsKey('category')){
+                        return Text(controller.errors['category'][0].toString());
+                  }
+                  return Text('');
+                }),
+              )
+          );
         });
   }
 }

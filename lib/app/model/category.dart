@@ -1,6 +1,9 @@
 import 'package:lustore/app/api/api_category.dart';
+import 'package:lustore/app/core/model.dart';
 
-class Category extends ApiCategories{
+class Category extends Model{
+  @override
+  String action = "category";
   int? id;
   String? category;
 

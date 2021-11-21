@@ -18,24 +18,23 @@ class ReportsController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await salesAndCost();
-    await getCategoriesAndProductsBestSelling();
-    await salesYear();
-    completedLoading.value = true;
+    await saleReport();
+    // await getCategoriesAndProductsBestSelling();
+    // await salesYear();
+    // completedLoading.value = true;
   }
 
-  salesAndCost() async {
+  saleReport() async {
 
     var resultGetSales = await report.getReportsSales();
-    var resultGetCost = await report.getReportsCost();
-    if (resultGetSales["result"].length == 0 || resultGetCost["result"].length == 0) {
+    print(resultGetSales);
+    if (resultGetSales["result"].length == 0) {
       return;
     }
     monthSales = resultGetSales["result"];
-    costMonth = resultGetCost["result"];
 
     monthSales.forEach((key, value) {
-      data.add(OrdinalSales(key,double.parse(value.toString()),double.parse(costMonth[key].toString())));
+      data.add(OrdinalSales(key,double.parse(value.toString())));
     });
 
   }
@@ -105,9 +104,8 @@ class SalesProduct{
 class OrdinalSales {
   final String year;
   final double sales;
-  final double cost;
 
-  OrdinalSales(this.year, this.sales, this.cost);
+  OrdinalSales(this.year, this.sales);
 }
 
 

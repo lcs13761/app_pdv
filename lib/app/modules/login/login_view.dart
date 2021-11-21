@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lustore/app/routes/app_pages.dart';
 import 'package:lustore/app/theme/loading_style.dart';
 import 'login_controller.dart';
 
@@ -160,7 +161,9 @@ class LoginView extends GetView<LoginController> {
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(Routes.LOGIN_FORGET);
+              },
               child: Text(
                 "Esqueceu a senha?",
                 style: TextStyle(

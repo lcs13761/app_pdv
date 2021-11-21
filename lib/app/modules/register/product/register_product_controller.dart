@@ -19,14 +19,14 @@ class RegisterProductController extends GetxController {
   Future getProducts() async{
         inLoading.value = true;
         products.clear();
-        var _response = await product.getAllProducts();
+        var _response = await product.index();
         inLoading.value = false;
-        products.addAll(_response["result"]);
+        products.addAll(_response["data"]);
   }
 
   Future deleteProduct(_id) async{
 
-    return await product.delete(_id.toString());
+    return await product.destroy(_id.toString());
 
   }
 

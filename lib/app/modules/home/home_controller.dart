@@ -40,27 +40,27 @@ class HomeController extends GetxController {
   }
 
   Future getSale() async {
-    var _product = await sale.getSales();
+    var _product = await sale.index();
     saleProductAll.clear();
-    saleProductAll.addAll(_product["result"]);
-    listSale(_product["result"]);
+    saleProductAll.addAll(_product["data"]);
+    listSale(_product["data"]);
   }
 
   Future getProducts() async {
     inLoading.value = true;
     allProduct.clear();
-    var _response = await product.getAllProducts();
+    var _response = await product.index();
     inLoading.value = false;
-    allProduct.addAll(_response["result"]);
+    allProduct.addAll(_response["data"]);
   }
 
   void searchProduct(String text) {
     if (saveProducts.isEmpty) {
-      saveProducts.addAll(allProduct);
+     // saveProducts.addAll(allProduct);
     }
     if (search.text.isEmpty) {
       allProduct.clear();
-      allProduct.addAll(saveProducts);
+    //  allProduct.addAll(saveProducts);
       saveProducts.clear();
       return;
     }
@@ -70,7 +70,7 @@ class HomeController extends GetxController {
             element["code"].toString().contains(text) ||
             element["product"].toString().contains(text))
         .toList();
-    allProduct.addAll(_result);
+  //  allProduct.addAll(_result);
   }
 
   Future productCreateSale(_product) async {
@@ -78,7 +78,7 @@ class HomeController extends GetxController {
     sale.product = Product(
         id: _product["id"],
         qts: int.parse(qts.text) < 1 ? 1 : int.parse(qts.text));
-    return await sale.create(sale);
+    return await sale.store(sale);
   }
 
   void listSale(_product) {
@@ -95,7 +95,7 @@ class HomeController extends GetxController {
 
   Future finishSale() async {
     sale.client = client.text;
-    return await sale.finishSale(sale);
+    //return await sale.finishSale(sale);
   }
 }
 

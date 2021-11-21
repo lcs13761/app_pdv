@@ -177,6 +177,7 @@ class HomeView extends GetView<HomeController> {
         itemCount: controller.allProduct.length,
         itemBuilder: (BuildContext context, int index) {
           var _product = controller.allProduct[index];
+          print(_product);
           return ListTile(
             onTap: () {
               dialogAddProductSale(context, _product);
@@ -234,7 +235,7 @@ class HomeView extends GetView<HomeController> {
                         await controller.productCreateSale(_product);
                     if (_response["result"].length == 0) {
                       Get.back();
-                      error(context, _response["error"].toString());
+                      error(context, _response);
                     } else {
                       await controller.getProducts();
                       controller.search.text = "";
@@ -406,7 +407,7 @@ class HomeView extends GetView<HomeController> {
                         var _response = await controller.finishSale();
                         if (_response != true) {
                           Get.back();
-                          error(context, _response["error"].toString());
+                          error(context, _response);
                           return;
                         }
                         await controller.getSale();
@@ -535,7 +536,7 @@ class HomeView extends GetView<HomeController> {
                     var _response = await controller.finishSale();
                     if (_response != true) {
                       Get.back();
-                      error(context, _response["error"].toString());
+                      error(context, _response);
                       return;
                     }
                     await controller.getSale();
@@ -626,12 +627,7 @@ class HomeView extends GetView<HomeController> {
           child: Text("CONTINUAR"),
         ));
   }
-
-
 }
 
-
-
-//dialog
 
 

@@ -1,15 +1,17 @@
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:lustore/app/Api/api_user.dart';
+import 'package:lustore/app/boot/config.dart';
+import 'package:lustore/app/api/api_auth.dart';
 
+class ApiReport  {
 
-class ApiReport extends ApiUser {
+  ApiAuth user = ApiAuth();
 
   Future<dynamic> getReportsSales() async {
-    String token = await refreshJwt();
+    String token = await user.refreshJwt();
     final response = await http.get(
-      Uri.parse(ApiUser.url + "reports/sales"),
+      Uri.parse(url + "report/sale"),
       headers: <String, String>{
         'Authorization': 'Bearer ' + token
       },
@@ -23,9 +25,9 @@ class ApiReport extends ApiUser {
   }
 
   Future<dynamic> getReportsCost() async {
-    String token = await refreshJwt();
+    String token = await user.refreshJwt();
     final response = await http.get(
-      Uri.parse(ApiUser.url +  "reports/cost"),
+      Uri.parse(url +  "reports/cost"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + token
@@ -39,9 +41,9 @@ class ApiReport extends ApiUser {
   }
 
   Future<dynamic> getCategoriesAndProductsBestSelling() async {
-    String token = await refreshJwt();
+    String token = await user.refreshJwt();
     final response = await http.get(
-      Uri.parse(ApiUser.url +  "reports/best/category/product"),
+      Uri.parse(url +  "reports/best/category/product"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + token
@@ -55,9 +57,9 @@ class ApiReport extends ApiUser {
   }
 
   Future<dynamic> annualProfit() async {
-    String token = await refreshJwt();
+    String token = await user.refreshJwt();
     final response = await http.get(
-      Uri.parse(ApiUser.url + "reports/annual-profit"),
+      Uri.parse(url + "reports/annual-profit"),
       headers: <String, String>{
         'Authorization': 'Bearer ' + token
       },

@@ -1,15 +1,17 @@
 import 'package:lustore/app/api/api_product.dart';
+import 'package:lustore/app/core/model.dart';
 import 'package:lustore/app/model/category.dart';
 
-class Product extends ApiProduct{
-
+class Product extends Model{
+    @override
+    String action = "product";
     int? id;
     String? code;
     String? product;
     double? saleValue;
     double? costValue;
     String? description;
-    int? size;
+    String? size;
     int? qts;
     Category? category;
     List? image;

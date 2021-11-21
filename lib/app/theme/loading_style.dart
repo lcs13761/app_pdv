@@ -17,6 +17,7 @@ const styleColorWhite = TextStyle(
   fontSize: 20
 );
 
+
 const colorAndSizeRegisterProduct = TextStyle(
     color:grayColor,
     fontSize: 16);
@@ -54,7 +55,7 @@ void loading(context) {
       type: CoolAlertType.loading,
       text: 'Carregando....',
       animType: CoolAlertAnimType.scale,
-      barrierDismissible: false);
+      barrierDismissible: true);
 }
 
 void confirmAlert(context,String text){
@@ -68,13 +69,13 @@ void confirmAlert(context,String text){
   );
 }
 
-void error(context,String text) {
+void error(context,Map text) {
   CoolAlert.show(
       context: context,
       width: 400,
       loopAnimation: false,
       type: CoolAlertType.error,
-      text: text,
+      text: text.map((key, value) => value[0]).toString(),
       title: "Error!",
       animType: CoolAlertAnimType.scale,
       backgroundColor: const Color(0xCD000000),
