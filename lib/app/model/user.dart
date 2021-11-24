@@ -1,4 +1,3 @@
-import 'package:lustore/app/api/api_user.dart';
 import 'package:lustore/app/core/model.dart';
 
 class User extends Model{

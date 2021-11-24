@@ -20,6 +20,7 @@ class RegisterProductController extends GetxController {
         inLoading.value = true;
         products.clear();
         var _response = await product.index();
+        print(_response);
         inLoading.value = false;
         products.addAll(_response["data"]);
   }

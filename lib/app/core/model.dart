@@ -77,14 +77,14 @@ abstract class Model {
     if (response.statusCode == 200) {
       return true;
     } else {
-      return jsonDecode(jsonEncode(response.body));
+      return jsonDecode(response.body);
     }
   }
 
   Future<dynamic> destroy(id) async {
     String token = await auth.refreshJwt();
     final response = await http.delete(
-      Uri.parse(url + action + "/" + id),
+      Uri.parse(url + action + "/" + id.toString()),
       headers: <String, String>{
         'Accept' : 'application/json',
         'Authorization': 'Bearer ' + token

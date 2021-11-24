@@ -31,7 +31,6 @@ class RegisterProductCreateAndUpdateView
                     if (_formKey.currentState!.validate()) {
                       loading(context);
                       var _response = await controller.submitTypeAction();
-                      print(_response);
                       await 1.delay();
                       Get.back();
                       if (_response == true) {
@@ -39,6 +38,7 @@ class RegisterProductCreateAndUpdateView
                       } else {
                         controller.errors.clear();
                         controller.errors.addAll(_response);
+
                         //  print( _response.map((key, value) => value[0]).toList());
                         // error(context, _response);
                       }
@@ -255,11 +255,11 @@ class RegisterProductCreateAndUpdateView
           ),
         ),
         Obx(() {
-          if (controller.errors.containsKey(key)) {
+          if (controller.errors.containsKey('errors') && controller.errors['errors'].toString().contains(key)) {
             return Container(
               margin: const EdgeInsets.only(top: 5, bottom: 5, left: 15),
               child: Text(
-                controller.errors[key][0].toString(),
+                controller.errors['errors'][key][0].toString(),
                 style: const TextStyle(color: Colors.red),
               ),
             );

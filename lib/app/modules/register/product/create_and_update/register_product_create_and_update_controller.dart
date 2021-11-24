@@ -97,6 +97,7 @@ class RegisterProductCreateAndUpdateController extends GetxController {
       _image = await upload.upload(fileImage.value);
     }
 
+    print(_image);
     product.code = cod.text;
     product.product = productName.text;
     product.description = description.text;
@@ -112,6 +113,7 @@ class RegisterProductCreateAndUpdateController extends GetxController {
     product.image = [
     ImageController(image: _image)
     ];
+    
     if(typeAction.value == "create") return await product.store(product);
     if(typeAction.value == "update") return await product.update(product,id);
 

@@ -14,10 +14,17 @@ class ApiUpload  {
     final request =
         http.MultipartRequest('POST', Uri.parse(url + "upload"));
         request.headers.addAll({'Authorization': 'Bearer ' + token});
-        request.files.add(http.MultipartFile("image",
-        File(fileName).readAsBytes().asStream(), File(fileName).lengthSync(),
-        filename: fileName.split("/").last));
-    var response = await request.send();
+        request.files.add(
+            http.MultipartFile(
+                "images",
+            File(fileName).readAsBytes().asStream(),
+            File(fileName).lengthSync(),
+            filename: fileName.split("/").last
+            )
+        );
+
+        var response = await request.send();
+
     if (response.statusCode == 200) {
       var _image = await response.stream.transform(utf8.decoder).join();
         _image = _image.replaceAll("\\", "").split(",")[1].split('"')[3];

@@ -1,4 +1,3 @@
-import 'package:lustore/app/api/api_category.dart';
 import 'package:lustore/app/core/model.dart';
 
 class Category extends Model{
