@@ -42,7 +42,6 @@ class HomeListerSalesProductsController extends GetxController {
         if(action == "delete"){
             var _response = await sale.destroy(products[index]["id"].toString());
             if(_response != true){
-              print(_response);
               return;
             }
             products.removeAt(index);

@@ -38,9 +38,6 @@ class RegisterProductCreateAndUpdateView
                       } else {
                         controller.errors.clear();
                         controller.errors.addAll(_response);
-
-                        //  print( _response.map((key, value) => value[0]).toList());
-                        // error(context, _response);
                       }
                     }
                   },
@@ -70,7 +67,7 @@ class RegisterProductCreateAndUpdateView
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                      child: selectImage(),
+                      child: selectImage(context),
                       decoration:
                           const BoxDecoration(color: backgroundColorDark),
                       width: 1000,
@@ -108,10 +105,13 @@ class RegisterProductCreateAndUpdateView
     );
   }
 
-  Widget selectImage() {
+  Widget selectImage(context) {
     return Column(
       children: <Widget>[
         GestureDetector(
+          onLongPress: () {
+            dialogRemoveImage(context, 0);
+          },
           onTap: () async {
             dialogSelectImage();
           },
@@ -122,11 +122,15 @@ class RegisterProductCreateAndUpdateView
             height: 150,
             width: 150,
             child: Obx(() {
-              if (controller.fileImage.isNotEmpty) {
-                if (File(controller.fileImage.toString()).isAbsolute) {
-                  return Image.file(File(controller.fileImage.toString()));
+              if (controller.fileImage.isNotEmpty &&
+                  controller.fileImage[0]['image'] != null) {
+                if (File(controller.fileImage[0]['image'].toString())
+                    .isAbsolute) {
+                  return Image.file(
+                      File(controller.fileImage[0]['image'].toString()));
                 } else {
-                  return Image.network(controller.fileImage.toString());
+                  return Image.network(
+                      controller.fileImage[0]['image'].toString());
                 }
               } else {
                 return const Align(
@@ -142,6 +146,21 @@ class RegisterProductCreateAndUpdateView
         ),
       ],
     );
+  }
+
+  void dialogRemoveImage(context, index) {
+    Get.dialog(AlertDialog(
+      content: ListTile(
+        onTap: () {
+          Get.back();
+          controller.fileImage[index]['image'] = null;
+          var _imageRemove = controller.fileImage[index];
+          controller.fileImage.removeAt(index);
+          controller.fileImage.add(_imageRemove);
+        },
+        title: const Text("Remove Imagem."),
+      ),
+    ));
   }
 
   void dialogSelectImage() {
@@ -255,7 +274,8 @@ class RegisterProductCreateAndUpdateView
           ),
         ),
         Obx(() {
-          if (controller.errors.containsKey('errors') && controller.errors['errors'].toString().contains(key)) {
+          if (controller.errors.containsKey('errors') &&
+              controller.errors['errors'].toString().contains(key)) {
             return Container(
               margin: const EdgeInsets.only(top: 5, bottom: 5, left: 15),
               child: Text(

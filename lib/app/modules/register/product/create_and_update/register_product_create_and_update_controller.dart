@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:lustore/app/modules/register/product/register_product_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -8,7 +6,6 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lustore/app/api/api_upload.dart';
 import 'package:lustore/app/model/category.dart';
-import 'package:lustore/app/model/image_controller.dart';
 import 'package:lustore/app/model/product.dart';
 
 class RegisterProductCreateAndUpdateController extends GetxController {
@@ -26,7 +23,7 @@ class RegisterProductCreateAndUpdateController extends GetxController {
   Category category = Category();
   Product product = Product();
   ApiUpload upload = ApiUpload();
-  RxString fileImage = "".obs;
+  RxList fileImage = [].obs;
   RxList categoryList = [].obs;
   int id = 0;
   RxString stringCategory = "1".obs;
@@ -39,7 +36,6 @@ class RegisterProductCreateAndUpdateController extends GetxController {
     super.onInit();
     if(Get.arguments != null){
       typeAction.value = "update";
-      print(Get.arguments);
       updateType(Get.arguments);
     }
     await getAllCategories();
@@ -69,7 +65,7 @@ class RegisterProductCreateAndUpdateController extends GetxController {
         : double.parse(_product["costValue"].toString());
 
       if(_product["image"].length != 0){
-        fileImage.value = _product["image"][0]["image"];
+        fileImage.addAll(_product["image"]);
       }
       id = _product["id"];
       stringCategory.value = _product["category"]["id"].toString();
@@ -85,19 +81,33 @@ class RegisterProductCreateAndUpdateController extends GetxController {
 
   void controlsReturnTypeImage(XFile? file) {
     if (file!.path.isNotEmpty) {
-      fileImage.value = file.path;
+      fileImage.addAll([{
+        'id' : null,
+        'image' : file.path
+      }]);
     }
   }
 
   Future<dynamic> submitTypeAction() async {
 
-    var _image = fileImage.value;
+    var image =  fileImage;
 
-    if(fileImage.isNotEmpty && File(fileImage.toString()).isAbsolute){
-      _image = await upload.upload(fileImage.value);
+    List _images = [];
+    for(var valueImage in image){
+      if(valueImage['image'] != null && valueImage['image'].isNotEmpty && File(valueImage['image'].toString()).isAbsolute){
+        String _image = await upload.upload(valueImage['image']);
+        _images.add({
+          'id' : null,
+          'image' : _image
+        });
+      }else{
+        _images.addAll([{
+          'id': valueImage?['id'],
+          'image': valueImage['image']
+        }]);
+      }
     }
 
-    print(_image);
     product.code = cod.text;
     product.product = productName.text;
     product.description = description.text;
@@ -110,10 +120,8 @@ class RegisterProductCreateAndUpdateController extends GetxController {
     product.size = size.text;
     product.qts = int.parse(qts.text);
     product.category = Category(id: int.parse(stringCategory.toString()));
-    product.image = [
-    ImageController(image: _image)
-    ];
-    
+    product.image = _images.map((e) => e).toList();
+
     if(typeAction.value == "create") return await product.store(product);
     if(typeAction.value == "update") return await product.update(product,id);
 

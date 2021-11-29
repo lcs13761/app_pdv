@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lustore/app/modules/drawer/drawer.dart';
 import 'package:lustore/app/routes/app_pages.dart';
 import 'package:lustore/app/theme/loading_style.dart';
@@ -86,10 +86,9 @@ class HomeView extends GetView<HomeController> {
                 padding: const EdgeInsets.only(left: 10),
                 child: ElevatedButton(
                   onPressed: () {
-                    if(controller.totalSale > 0.0){
-                      dialogDemand(controller.totalSale.toDouble(),context);
-                   }
-
+                    if (controller.totalSale > 0.0) {
+                      dialogDemand(controller.totalSale.toDouble(), context);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                       minimumSize: const Size(15, 70), primary: styleColorBlue),
@@ -169,23 +168,23 @@ class HomeView extends GetView<HomeController> {
           ),
         );
       }
-      return ListView.separated(
-        separatorBuilder: (context, index) => const Divider(
-          color: whiteConstColor,
-          height: 1,
-        ),
-        itemCount: controller.allProduct.length,
-        itemBuilder: (BuildContext context, int index) {
-          var _product = controller.allProduct[index];
-          print(_product);
-          return ListTile(
-            onTap: () {
-              dialogAddProductSale(context, _product);
+      return PagedListView.separated(
+          separatorBuilder: (context, index) => const Divider(
+                color: whiteConstColor,
+                height: 1,
+              ),
+          pagingController: controller.allProduct,
+          builderDelegate: PagedChildBuilderDelegate(
+            itemBuilder: (BuildContext context, item, index) {
+              var _product = item;
+              return ListTile(
+                onTap: () {
+                  dialogAddProductSale(context, _product);
+                },
+                title: product(_product),
+              );
             },
-            title: product(_product),
-          );
-        },
-      );
+          ));
     });
   }
 
@@ -272,9 +271,10 @@ class HomeView extends GetView<HomeController> {
                   _product["image"][0]["image"],
                   fit: BoxFit.fill,
                 )
-              : const Align(
+              : Align(
                   alignment: Alignment.center,
-                  child: Text("sa", style: colorAndSizeRegisterProduct),
+                  child: Text(_product['product'].toString().substring(0, 2),
+                      style: colorAndSizeRegisterProduct),
                 ),
         ),
         Expanded(
@@ -342,12 +342,11 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-
   //dialog
   void dialogDemand(value, context) {
     Get.dialog(Dialog(
       insetPadding:
-      const EdgeInsets.only(top: 50, bottom: 50, left: 20, right: 20),
+          const EdgeInsets.only(top: 50, bottom: 50, left: 20, right: 20),
       child: Scaffold(
         backgroundColor: backgroundColorDark,
         appBar: AppBar(
@@ -376,7 +375,7 @@ class HomeView extends GetView<HomeController> {
                       controller.formatter.format(value),
                       textAlign: TextAlign.center,
                       style:
-                      const TextStyle(fontSize: 24, color: whiteConstColor),
+                          const TextStyle(fontSize: 24, color: whiteConstColor),
                     ),
                   )),
             ),
@@ -401,7 +400,7 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () async{
+                      onTap: () async {
                         Get.back();
                         loading(context);
                         var _response = await controller.finishSale();
@@ -414,7 +413,7 @@ class HomeView extends GetView<HomeController> {
                         Get.back();
                         success("Venda realizada com sucesso", context);
                       },
-                      child:  Container(
+                      child: Container(
                         decoration: const BoxDecoration(color: grayColor),
                         alignment: Alignment.center,
                         child: const Text("CARTAO DE CRÉDITO"),
@@ -433,7 +432,7 @@ class HomeView extends GetView<HomeController> {
   void moneyDialog(double value, context) {
     Get.dialog(Dialog(
       insetPadding:
-      const EdgeInsets.only(top: 150, bottom: 150, left: 30, right: 30),
+          const EdgeInsets.only(top: 150, bottom: 150, left: 30, right: 30),
       child: Scaffold(
         backgroundColor: styleColorBlue,
         body: Column(
@@ -454,7 +453,7 @@ class HomeView extends GetView<HomeController> {
                     child: Text(
                       controller.formatter.format(value),
                       style:
-                      const TextStyle(fontSize: 24, color: whiteConstColor),
+                          const TextStyle(fontSize: 24, color: whiteConstColor),
                     ),
                   )
                 ],
@@ -590,11 +589,12 @@ class HomeView extends GetView<HomeController> {
     return TextButton(
       onPressed: () {
         if (controller.value.text.length > 1) {
-          controller.value.text =
-              controller.value.text.substring(0, controller.value.text.length - 1);
+          controller.value.text = controller.value.text
+              .substring(0, controller.value.text.length - 1);
         }
         if (controller.thing.isNotEmpty) {
-          controller.thing = controller.thing.substring(0, controller.thing.length - 1);
+          controller.thing =
+              controller.thing.substring(0, controller.thing.length - 1);
         }
       },
       child: const Icon(
@@ -621,13 +621,8 @@ class HomeView extends GetView<HomeController> {
           onPressed: () {
             Get.back();
           },
-          style: ElevatedButton.styleFrom(
-              primary: styleColorBlue
-          ),
-          child: Text("CONTINUAR"),
+          style: ElevatedButton.styleFrom(primary: styleColorBlue),
+          child: const Text("CONTINUAR"),
         ));
   }
 }
-
-
-

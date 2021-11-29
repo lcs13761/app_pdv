@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+// ignore: unused_import
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -76,17 +77,8 @@ class ReportsView extends GetView<ReportsController> {
                 spacing: 0.1,
                 dataSource: controller.data.toList(),
                 xValueMapper: (dynamic sales, _) => sales.year,
-                yValueMapper: (dynamic sales, _) => sales.cost,
-                name: 'custo do mês',
-                // Enable data label
-              ),
-            BarSeries<dynamic, String>(
-                width: 1,
-                spacing: 0.1,
-                dataSource: controller.data.toList(),
-                xValueMapper: (dynamic sales, _) => sales.year,
                 yValueMapper: (dynamic sales, _) => sales.sales,
-                name: 'vendas do mês',
+                name: 'Vendas do mês',
                 // Enable data label
                 )
           ]);
@@ -112,7 +104,7 @@ class ReportsView extends GetView<ReportsController> {
               dataSource: controller.yearSales.toList(),
               xValueMapper: (dynamic sales, _) => sales.year,
               yValueMapper: (dynamic sales, _) => sales.sales,
-              name: 'custo do mês',
+              name: 'Saldo anual',
               // Enable data label
               dataLabelSettings: const DataLabelSettings(isVisible: true),
             ),

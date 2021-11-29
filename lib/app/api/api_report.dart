@@ -24,26 +24,10 @@ class ApiReport  {
     }
   }
 
-  Future<dynamic> getReportsCost() async {
-    String token = await user.refreshJwt();
-    final response = await http.get(
-      Uri.parse(url +  "reports/cost"),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ' + token
-      },
-    );
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      return jsonDecode(jsonEncode(response.body));
-    }
-  }
-
   Future<dynamic> getCategoriesAndProductsBestSelling() async {
     String token = await user.refreshJwt();
     final response = await http.get(
-      Uri.parse(url +  "reports/best/category/product"),
+      Uri.parse(url +  "report/product/category"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ' + token
@@ -59,7 +43,7 @@ class ApiReport  {
   Future<dynamic> annualProfit() async {
     String token = await user.refreshJwt();
     final response = await http.get(
-      Uri.parse(url + "reports/annual-profit"),
+      Uri.parse(url + "report/sale/annual"),
       headers: <String, String>{
         'Authorization': 'Bearer ' + token
       },

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lustore/app/routes/app_pages.dart';
 import 'package:lustore/app/theme/loading_style.dart';
 import 'package:get/get.dart';
@@ -36,31 +37,33 @@ class RegisterProductView extends GetView<RegisterProductController> {
           ),
         );
       }
-      return ListView.separated(
-        separatorBuilder: (context, index) =>
-        const Divider(
-          color: whiteConstColor,
-          height: 1,
-        ),
-        itemCount: controller.products.length,
-        itemBuilder: (BuildContext context, int index) {
-          var _product = controller.products[index];
-          return ListTile(
-            onLongPress: () {
-              dialogActionProduct(context, _product["id"], index);
+      return PagedListView.separated(
+          separatorBuilder: (context, index) => const Divider(
+                color: whiteConstColor,
+                height: 1,
+              ),
+          pagingController: controller.products,
+          builderDelegate: PagedChildBuilderDelegate(
+            itemBuilder: (BuildContext context, item, index) {
+              var _product = item;
+              return ListTile(
+                onLongPress: () {
+                  dialogActionProduct(context, _product, index);
+                  
+                },
+                onTap: () {
+                  Get.toNamed(Routes.REGISTER_PRODUCT_CREATE_AND_UPDATE,
+                          arguments: _product)
+                      ?.whenComplete(() => unawaited(controller.refreshProduct()));
+                },
+                title: product(_product),
+              );
             },
-            onTap: () {
-              Get.toNamed(Routes.REGISTER_PRODUCT_CREATE_AND_UPDATE,
-                  arguments: _product)?.whenComplete(() => unawaited(controller.getProducts()));
-            },
-            title: product(_product),
-          );
-        },
-      );
+          ));
     });
   }
 
-  void dialogActionProduct(context, _id, index) {
+  void dialogActionProduct(context, _product, index) {
     Get.dialog(AlertDialog(
       content: ListTile(
         onTap: () {
@@ -68,13 +71,12 @@ class RegisterProductView extends GetView<RegisterProductController> {
           showDialog(
               barrierDismissible: false,
               context: context,
-              builder: (BuildContext context){
+              builder: (BuildContext context) {
                 return AlertDialog(
                   content: const Text("Deseja realmente excluir o produto ?"),
                   actions: [
                     ElevatedButton(
-                        style:
-                        ElevatedButton.styleFrom(
+                        style: ElevatedButton.styleFrom(
                           minimumSize: const Size(100, 50),
                           primary: Colors.transparent,
                           shadowColor: Colors.transparent,
@@ -83,29 +85,32 @@ class RegisterProductView extends GetView<RegisterProductController> {
                           Get.back();
                         },
                         child: const Text(
-                          "NÃO", style: TextStyle(color: Colors.black),)),
+                          "NÃO",
+                          style: TextStyle(color: Colors.black),
+                        )),
                     ElevatedButton(
-                        style:
-                        ElevatedButton.styleFrom(minimumSize: const Size(100, 50)),
-                        onPressed: () async{
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(100, 50)),
+                        onPressed: () async {
                           loading(context);
                           await 1.delay();
-                          var _response = await controller.deleteProduct(_id);
-                         if(_response != true){
+                          var _response = await controller.deleteProduct(_product['id']);
+                          if (_response != true) {
                             Get.back();
                             Get.back();
                             error(context, _response["error"]);
-                          }else{
+                          } else {
                             Get.back();
                             Get.back();
-                            controller.products.removeAt(index);
+                            controller.products.value.itemList!.removeAt(index);
+                            // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+                            controller.products.notifyListeners();
                           }
                         },
                         child: const Text("SIM"))
                   ],
                 );
-              }
-          );
+              });
         },
         title: const Text("Excluir Produto."),
       ),
@@ -123,15 +128,17 @@ class RegisterProductView extends GetView<RegisterProductController> {
             color: const Color.fromRGBO(31, 31, 31, 1.0),
           ),
           margin: const EdgeInsets.only(top: 5, bottom: 5),
-          child: _product["image"].length != 0
+          child: _product["image"].length != 0 &&
+                  _product['image'][0]['image'] != null
               ? Image.network(
-            _product["image"][0]["image"],
-            fit: BoxFit.fill,
-          )
-              : const Align(
-            alignment: Alignment.center,
-            child: Text("sa", style: colorAndSizeRegisterProduct),
-          ),
+                  _product["image"][0]["image"],
+                  fit: BoxFit.fill,
+                )
+              : Align(
+                  alignment: Alignment.center,
+                  child: Text(_product['product'].toString().substring(0, 2),
+                      style: colorAndSizeRegisterProduct),
+                ),
         ),
         Expanded(
           child: ListTile(
@@ -163,7 +170,8 @@ class RegisterProductView extends GetView<RegisterProductController> {
   Widget floatingButton() {
     return FloatingActionButton(
       onPressed: () {
-        Get.toNamed(Routes.REGISTER_PRODUCT_CREATE_AND_UPDATE)?.whenComplete(() => unawaited(controller.getProducts()));
+        Get.toNamed(Routes.REGISTER_PRODUCT_CREATE_AND_UPDATE)
+            ?.whenComplete(() => unawaited(controller.refreshProduct()));
       },
       child: const Icon(Icons.add, color: whiteConstColor),
       backgroundColor: styleColorBlue,

@@ -7,6 +7,10 @@ abstract class Model {
   String action = "";
   Auth auth = Auth();
 
+  actionApi(String _action){
+    action = _action;
+  }
+
   Future<dynamic> index() async {
     String token = await auth.refreshJwt();
     final response = await http.get(
@@ -49,7 +53,7 @@ abstract class Model {
   Future<dynamic> show(id) async {
     String token = await auth.refreshJwt();
     final response = await http.get(
-      Uri.parse(url + action + "/" + id),
+      Uri.parse(url + action + "/" + id.toString()),
       headers: <String, String>{
         'Accept' : 'application/json',
         'Authorization': 'Bearer ' + token
@@ -96,4 +100,6 @@ abstract class Model {
       return jsonDecode(response.body);
     }
   }
+
+
 }

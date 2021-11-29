@@ -80,6 +80,7 @@ class LoginForgetView extends GetView<LoginForgetController> {
            var _response = await controller.forget();
             if (_response["result"].length != 0) {
               await 1.delay();
+              Get.back();
               success(_response["result"], context,action: "back");
               return;
             } else {

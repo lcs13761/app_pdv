@@ -24,8 +24,21 @@ abstract class Routes {
   // ignore: constant_identifier_names
   static const REGISTER_PRODUCT = _Paths.REGISTER + _Paths.REGISTER_PRODUCT;
   // ignore: constant_identifier_names
-  static const REGISTER_PRODUCT_CREATE_AND_UPDATE =
-      _Paths.REGISTER + _Paths.REGISTER_PRODUCT + _Paths.REGISTER_PRODUCT_CREATE_AND_UPDATE;
+  static const REGISTER_PRODUCT_CREATE_AND_UPDATE = _Paths.REGISTER +
+      _Paths.REGISTER_PRODUCT +
+      _Paths.REGISTER_PRODUCT_CREATE_AND_UPDATE;
+  // ignore: constant_identifier_names
+  static const CONFIG = _Paths.CONFIG;
+  // ignore: constant_identifier_names
+  static const CONFIG_USER = _Paths.CONFIG + _Paths.CONFIG_USER;
+  // ignore: constant_identifier_names
+  static const CONFIG_CHANGE_PASSWORD =
+      _Paths.CONFIG + _Paths.CONFIG_CHANGE_PASSWORD;
+  // ignore: constant_identifier_names
+  static const CONFIG_LIST_ADMIN = _Paths.CONFIG + _Paths.CONFIG_LIST_ADMIN;
+  // ignore: constant_identifier_names
+  static const CONFIG_LIST_ADMIN_CREATE =
+      _Paths.CONFIG + _Paths.CONFIG_LIST_ADMIN + _Paths.CONFIG_LIST_ADMIN_CREATE;
 }
 
 abstract class _Paths {
@@ -49,7 +62,14 @@ abstract class _Paths {
   static const REGISTER_PRODUCT = '/product';
   // ignore: constant_identifier_names
   static const REGISTER_PRODUCT_CREATE_AND_UPDATE = '/create-and-update';
-
+  // ignore: constant_identifier_names
+  static const CONFIG = '/config';
+  // ignore: constant_identifier_names
+  static const CONFIG_USER = '/user';
+  // ignore: constant_identifier_names
+  static const CONFIG_CHANGE_PASSWORD = '/change-password';
+  // ignore: constant_identifier_names
+  static const CONFIG_LIST_ADMIN = '/list-admin';
+  // ignore: constant_identifier_names
+  static const CONFIG_LIST_ADMIN_CREATE = '/create';
 }
-
-

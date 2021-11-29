@@ -46,7 +46,6 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
         itemCount: controller.categories.length,
         itemBuilder: (BuildContext context, int index) {
           var _category = controller.categories[index];
-          print(_category);
           return ListTile(
             onLongPress: () {
               dialogActionCategory(context, _category, index);
@@ -150,7 +149,6 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
                     await 1.delay();
                     var _response = await controller.createdOrUpdateOrDelete(
                         id: _category["id"]);
-                    print(_response);
                     if (_response != true) {
                       Get.back();
                       Get.back();
@@ -244,7 +242,7 @@ class RegisterCategoryView extends GetView<RegisterCategoryController> {
                   if(controller.errors.containsKey('category')){
                         return Text(controller.errors['category'][0].toString());
                   }
-                  return Text('');
+                  return const Text('');
                 }),
               )
           );

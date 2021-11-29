@@ -19,20 +19,18 @@ class ReportsController extends GetxController {
   void onInit() async {
     super.onInit();
     await saleReport();
-    // await getCategoriesAndProductsBestSelling();
-    // await salesYear();
-    // completedLoading.value = true;
+    await getCategoriesAndProductsBestSelling();
+    await salesYear();
+    completedLoading.value = true;
   }
 
   saleReport() async {
 
-    var resultGetSales = await report.getReportsSales();
-    print(resultGetSales);
-    if (resultGetSales["result"].length == 0) {
+    Map _result = await report.getReportsSales();
+    if (_result.containsKey('result').toString().isNotEmpty) {
       return;
     }
-    monthSales = resultGetSales["result"];
-
+    monthSales = _result["result"];
     monthSales.forEach((key, value) {
       data.add(OrdinalSales(key,double.parse(value.toString())));
     });
@@ -41,16 +39,16 @@ class ReportsController extends GetxController {
 
   getCategoriesAndProductsBestSelling() async {
 
-    var result = await report.getCategoriesAndProductsBestSelling();
-    if(result["result"].length == 0){
+    Map _result = await report.getCategoriesAndProductsBestSelling();
+    if(_result.containsKey('result').toString().isNotEmpty){
       return;
     }
 
-    Map categories = result["result"]["categories"];
+    Map categories = _result["result"]["categories"];
     var orders = categories.entries.toList()..sort((a,b) => b.value.compareTo(a.value));
     categories..clear()..addEntries(orders);
 
-    Map products = result["result"]["products"];
+    Map products = _result["result"]["products"];
     orders = products.entries.toList()..sort((a,b) => b.value.compareTo(a.value));
     products..clear()..addEntries(orders);
     var i = 0;
@@ -69,9 +67,9 @@ class ReportsController extends GetxController {
   }
 
   salesYear() async{
-    var listSales =  await report.annualProfit();
-    if (listSales["result"].length == 0) {}
-    Map yearList = listSales["result"];
+    Map _result =  await report.annualProfit();
+    if (_result.containsKey('result').toString().isNotEmpty) return;
+    Map yearList = _result["result"];
     var yearMin = DateTime.now().year - 5;
     yearList.forEach((key, value) {
       if(int.parse(key) >= yearMin){

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lustore/app/model/product.dart';
 import 'package:intl/intl.dart';
 import 'package:lustore/app/model/sale.dart';
@@ -19,23 +22,28 @@ class HomeController extends GetxController {
   String codeProduct = "";
   String thing = "";
   RxBool inLoading = true.obs;
-  RxList allProduct = [].obs;
+  PagingController allProduct = PagingController(firstPageKey: 0);
   RxList saveProducts = [].obs;
   RxList saleProductAll = [].obs;
   RxInt qtsSale = 0.obs;
   RxDouble totalSale = 0.0.obs;
   RxBool activeTextField = false.obs;
+  String? nextPageProduct = '';
+  int total = 0;
 
 
   @override
   void onInit() async {
     super.onInit();
-    await getProducts();
-    await getSale();
+    await loadingSaleAndProducts();
+    inLoading.value = false;
   }
 
   Future loadingSaleAndProducts() async {
-    await getProducts();
+    inLoading.value = false;
+    allProduct.addPageRequestListener((pageKey) {
+      unawaited(getProducts(pageKey: pageKey)) ;
+    });
     await getSale();
   }
 
@@ -46,31 +54,55 @@ class HomeController extends GetxController {
     listSale(_product["data"]);
   }
 
-  Future getProducts() async {
-    inLoading.value = true;
-    allProduct.clear();
-    var _response = await product.index();
-    inLoading.value = false;
-    allProduct.addAll(_response["data"]);
+  Future getProducts({pageKey}) async {
+
+    try{
+     if(nextPageProduct != null){
+       Map _response = {};
+       if(nextPageProduct!.isEmpty){
+         _response = await product.index();
+         nextPageProduct = _response['links']['next'];
+         total = _response['meta']['total'];
+       }else{
+         _response = await product.nextProduct(nextPageProduct);
+         nextPageProduct = _response['links'].toString().contains('next') ? _response['links']['next'] : null;
+       }
+       bool isLastPage = false;
+        if(allProduct.itemList == null){
+          isLastPage = _response['data'].length == total;
+        }else{
+          isLastPage = allProduct.itemList!.length == total;
+        }
+
+       if(isLastPage){
+         allProduct.appendLastPage(_response['data']);
+       }else{
+         final nextPageKey = pageKey ?? 1 + _response['data'].length;
+         allProduct.appendPage(_response['data'], nextPageKey);
+       }
+     }
+    }catch(error){
+      allProduct.error(error);
+    }
   }
 
   void searchProduct(String text) {
     if (saveProducts.isEmpty) {
-     // saveProducts.addAll(allProduct);
+     //saveProducts.addAll(allProduct);
     }
     if (search.text.isEmpty) {
-      allProduct.clear();
-    //  allProduct.addAll(saveProducts);
+      //allProduct.clear();
+     // allProduct.addAll(saveProducts);
       saveProducts.clear();
       return;
     }
-    allProduct.clear();
-    List _result = saveProducts.value
-        .where((element) =>
-            element["code"].toString().contains(text) ||
-            element["product"].toString().contains(text))
-        .toList();
-  //  allProduct.addAll(_result);
+   // allProduct.clear();
+   //  List _result = saveProducts.value
+   //      .where((element) =>
+   //          element["code"].toString().contains(text) ||
+   //          element["product"].toString().contains(text))
+   //      .toList();
+    // allProduct.addAll(_result);
   }
 
   Future productCreateSale(_product) async {
@@ -97,6 +129,9 @@ class HomeController extends GetxController {
     sale.client = client.text;
     //return await sale.finishSale(sale);
   }
+
+
+
 }
 
 

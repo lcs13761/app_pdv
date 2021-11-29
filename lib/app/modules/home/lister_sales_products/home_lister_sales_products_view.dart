@@ -207,8 +207,8 @@ class HomeListerSalesProductsView
               Get.back();
             },
             child: Container(
-              padding: EdgeInsets.all(10),
-              child: Text("NÃO"),
+              padding: const EdgeInsets.all(10),
+              child: const Text("NÃO"),
             )
           ),
           GestureDetector(
@@ -219,8 +219,8 @@ class HomeListerSalesProductsView
               controller.actionProductSale(index);
             },
             child:Container(
-                padding: EdgeInsets.all(10),
-              child:  Text("SIM"),
+                padding: const EdgeInsets.all(10),
+              child:  const Text("SIM"),
             )
           ),
         ],

@@ -6,7 +6,6 @@ import 'package:lustore/app/boot/config.dart';
 import 'package:lustore/app/model/auth.dart';
 import 'dart:convert';
 import 'package:lustore/app/repository/iapi_auth.dart';
-import 'package:lustore/app/model/user.dart';
 
 class ApiAuth implements IApiAuth{
 
@@ -25,6 +24,8 @@ class ApiAuth implements IApiAuth{
     if (response.statusCode == 200) {
       var _level = jsonDecode(response.body)["level"];
       var _token = jsonDecode(response.body)["token"];
+      var _id =  jsonDecode(response.body)['user'];
+      store.write('id',_id);
       store.write("token", _token);
       if(int.parse(_level) != 5){
         logout();

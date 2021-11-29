@@ -41,6 +41,7 @@ class DrawerView {
           listTile(Icons.shopping_cart_outlined, "Venda",route: Routes.HOME,active: route),
           listTile(Icons.edit, "Cadastros",route: Routes.REGISTER,active: route),
           listTile(Icons.assessment_outlined, "Relatórios",route: Routes.REPORTS,active: route),
+          listTile(Icons.settings, 'Configuração',route: Routes.CONFIG,active: route),
           listTile(Icons.power_settings_new, "Sair"),
         ],
       ),
