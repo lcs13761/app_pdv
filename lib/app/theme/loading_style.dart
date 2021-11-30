@@ -55,7 +55,7 @@ void loading(context) {
       type: CoolAlertType.loading,
       text: 'Carregando....',
       animType: CoolAlertAnimType.scale,
-      barrierDismissible: true);
+      barrierDismissible: false);
 }
 
 void confirmAlert(context,String text){

@@ -405,7 +405,6 @@ class HomeView extends GetView<HomeController> {
                         Get.back();
                         loading(context);
                         var _response = await controller.finishSale();
-                        print(_response);
                         if (_response != true) {
                           Get.back();
                           error(context, _response);

@@ -52,10 +52,11 @@ class HomeController extends GetxController {
 
   Future refreshHome() async{
 
+    await getSale();
     nextPageProduct = '';
     allProduct.refresh();
     inLoading.value = false;
-    await getSale();
+
   }
 
   Future getSale() async {
@@ -99,23 +100,24 @@ class HomeController extends GetxController {
     }
   }
 
+
   void searchProduct(String text) {
     if (saveProducts.isEmpty) {
-     //saveProducts.addAll(allProduct);
+     saveProducts.addAll(allProduct.itemList!);
     }
     if (search.text.isEmpty) {
-      //allProduct.clear();
-     // allProduct.addAll(saveProducts);
+      allProduct.value.itemList!.clear();
+     allProduct.value.itemList!.addAll(saveProducts);
       saveProducts.clear();
       return;
     }
-   // allProduct.clear();
-   //  List _result = saveProducts.value
-   //      .where((element) =>
-   //          element["code"].toString().contains(text) ||
-   //          element["product"].toString().contains(text))
-   //      .toList();
-    // allProduct.addAll(_result);
+      allProduct.value.itemList!.clear();
+    List _result = saveProducts.value
+        .where((element) =>
+            element["code"].toString().contains(text) ||
+            element["product"].toString().contains(text))
+        .toList();
+    allProduct.value.itemList!.addAll(_result);
   }
 
   Future productCreateSale(_product) async {
@@ -126,13 +128,23 @@ class HomeController extends GetxController {
     return await sale.store(sale);
   }
 
+  discountProductView(_product){
+
+    var value = _product["saleValue"] * _product["qts"];
+    var calcDiscount = _product['discount'] / 100;
+    calcDiscount = value * calcDiscount;
+    return (value - calcDiscount);
+  }
+
+
   void listSale(_product) {
     int _qts = 0;
     double _value = 0.0;
     for (var index in _product) {
+      var calcDiscount = discountProductView(index);
       _value =
-          _value + (double.parse(index["saleValue"].toString()) * index["qts"]);
-      _qts = _qts + index["qts"] as int;
+          _value + calcDiscount;
+      _qts = _qts + index["qts"] as int ;
     }
     totalSale.value = _value;
     qtsSale.value = _qts;

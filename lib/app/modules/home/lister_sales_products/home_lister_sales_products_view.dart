@@ -19,9 +19,85 @@ class HomeListerSalesProductsView
           style: styleColorDark,
         ),
         iconTheme: const IconThemeData(color: Colors.black),
+        actions: <Widget>[
+            PopupMenuButton(
+                onSelected: (value){
+                  if(value == 'Desconto') dialogAddProductSale(context);
+                  if(value == 'Excluir Todos'){}
+                },
+                itemBuilder: (BuildContext context){
+                  return {"Desconto","Excluir Todos"}.map((e) {
+                    return PopupMenuItem(
+                        child: Text(e),
+                        value: e,
+                    );
+                  }).toList();
+                }
+            ),
+        ],
       ),
       body: _product(),
     );
+  }
+
+  void dialogAddProductSale(context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: TextField(
+              style: const TextStyle(fontSize: 20),
+              textAlign: TextAlign.end,
+              keyboardType: TextInputType.number,
+              controller: controller.discount,
+              decoration: const InputDecoration(
+                suffix: Text('%'),
+                label: Text(
+                  "Desconto",
+                  style: TextStyle(color: backgroundColorDark, fontSize: 16),
+                ),
+                border: InputBorder.none,
+                enabledBorder: enableBorderInline,
+                errorBorder: errorBorderInline,
+                focusedErrorBorder: focusBorderInline,
+                focusedBorder: focusBorderInline,
+              ),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(100, 50),
+                    primary: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                  ),
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: const Text(
+                    "Cancelar",
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                  )),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(100, 50)),
+                  onPressed: () async {
+                    Get.back();
+                    loading(context);
+                    await 1.delay();
+                    if(controller.products.isNotEmpty){
+                      var _response = await controller.discountProduct();
+                    }else{
+                      Get.back();
+                    }
+
+                  },
+                  child: const Text(
+                    "Salva",
+                    style: TextStyle(fontSize: 18),
+                  ))
+            ],
+          );
+        });
   }
 
   Widget _product() {
@@ -89,7 +165,7 @@ class HomeListerSalesProductsView
                  padding: const EdgeInsets.only(left: 10, right: 10),
                  child: Text(
                      controller.formatter
-                         .format(controller.products[index]["saleValue"] * _product["qts"]),
+                         .format(controller.discountProductView(controller.products[index])),
                      style: const TextStyle(color: whiteConstColor))),
          ),
           GestureDetector(

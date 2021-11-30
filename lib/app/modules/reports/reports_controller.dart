@@ -43,7 +43,6 @@ class ReportsController extends GetxController {
     if(_result.containsKey('result').toString().isEmpty){
       return;
     }
-    print(_result);
     Map categories = _result["result"]["categories"];
     var orders = categories.entries.toList()..sort((a,b) => b.value.compareTo(a.value));
     categories..clear()..addEntries(orders);
