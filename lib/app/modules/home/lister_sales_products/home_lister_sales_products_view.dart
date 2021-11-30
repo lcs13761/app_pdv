@@ -68,7 +68,7 @@ class HomeListerSalesProductsView
       height: 60,
       alignment: Alignment.centerLeft,
       child: Text(
-        _product["product"],
+        _product["product"]['product'],
         style: const TextStyle(color: whiteConstColor),
       ),
     );
@@ -94,7 +94,7 @@ class HomeListerSalesProductsView
          ),
           GestureDetector(
             onTap: () {
-              dialogDelete(_product["product"],index,context);
+              dialogDelete(_product["product"]['product'],index,context);
             },
             child: Container(
                 padding: const EdgeInsets.only(right: 5, left: 5),

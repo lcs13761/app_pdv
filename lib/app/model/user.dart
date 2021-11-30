@@ -11,6 +11,7 @@ class User extends Model{
   String? email;
   String? cpf;
   String? phone;
+  String? level;
   Address? address;
   String? current_password;
   String? password_confirmation;
@@ -25,6 +26,7 @@ class User extends Model{
         name = json['name'],
         email = json["email"],
         cpf = json['cpf'],
+        level = json['level'],
         phone = json['phone'],
         address = json['address'],
         current_password = json['current_password'],
@@ -37,6 +39,7 @@ class User extends Model{
       'photo' : photo,
       'name' : name,
       "email" : email,
+      'level' : level,
       'cpf' : cpf,
       'phone' : phone,
       'address' : address,

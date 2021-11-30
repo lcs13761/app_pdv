@@ -27,6 +27,7 @@ class LoginController extends GetxController {
     auth.password = password.text;
     var _response = await auth.login(auth);
     if(_response == true && rememberMe.isTrue){
+      store.write('email', email.text);
       store.write("remember", true);
     }
     return _response;

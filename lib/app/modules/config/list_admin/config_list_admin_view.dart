@@ -87,7 +87,7 @@ class ConfigListAdminView extends GetView<ConfigListAdminController> {
     return FloatingActionButton(
       onPressed: () {
         Get.toNamed(Routes.CONFIG_LIST_ADMIN_CREATE)
-         ?.whenComplete(() => unawaited(controller.adminList()));
+         ?.whenComplete(() => unawaited(controller.refreshList()));
       },
       child: const Icon(Icons.add, color: whiteConstColor),
       backgroundColor: styleColorBlue,

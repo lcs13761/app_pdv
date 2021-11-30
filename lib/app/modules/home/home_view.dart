@@ -232,17 +232,18 @@ class HomeView extends GetView<HomeController> {
                     await 1.delay();
                     var _response =
                         await controller.productCreateSale(_product);
-                    if (_response["result"].length == 0) {
+                    if (_response != true) {
                       Get.back();
                       error(context, _response);
                     } else {
-                      await controller.getProducts();
+
+                      await controller.refreshHome();
                       controller.search.text = "";
                       controller.qts.text = "1";
                       controller.activeTextField.value = false;
-                      controller.saleProductAll.clear();
-                      controller.saleProductAll.addAll(_response["result"]);
-                      controller.listSale(_response["result"]);
+                      controller.listSale(controller.saleProductAll);
+                      // // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+                      // controller.allProduct.notifyListeners();
                       Get.back();
                     }
                   },
@@ -309,7 +310,7 @@ class HomeView extends GetView<HomeController> {
       onPressed: () {
         Get.toNamed(Routes.HOME_LISTER_SALES_PRODUCTS,
                 arguments: controller.saleProductAll)
-            ?.whenComplete(() => (controller.loadingSaleAndProducts()));
+            ?.whenComplete(() => (controller.refreshHome()));
       },
       child: const Icon(Icons.expand_less, color: backgroundColorDark),
       backgroundColor: const Color.fromRGBO(250, 255, 230, 1),
@@ -404,6 +405,7 @@ class HomeView extends GetView<HomeController> {
                         Get.back();
                         loading(context);
                         var _response = await controller.finishSale();
+                        print(_response);
                         if (_response != true) {
                           Get.back();
                           error(context, _response);

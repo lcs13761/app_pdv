@@ -22,12 +22,11 @@ class ApiAuth implements IApiAuth{
         body: jsonEncode(data));
 
     if (response.statusCode == 200) {
-      var _level = jsonDecode(response.body)["level"];
-      var _token = jsonDecode(response.body)["token"];
-      var _id =  jsonDecode(response.body)['user'];
-      store.write('id',_id);
-      store.write("token", _token);
-      if(int.parse(_level) != 5){
+      var _response = jsonDecode(response.body);
+      store.write('name', _response['name']);
+      store.write('id',_response['id']);
+      store.write("token", _response['token']);
+      if(int.parse(_response['level']) != 5){
         logout();
         return false;
       }

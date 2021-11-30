@@ -32,9 +32,9 @@ class DrawerView {
                     "assets/images/logo-white.png",
                     width: 150,
                   ),
-                  const Text(
-                    "Admin",
-                    style: TextStyle(color: backgroundColorDark, fontSize: 16),
+                  Text(
+                    store.read('name') ?? 'admin' ,
+                    style: const TextStyle(color: backgroundColorDark, fontSize: 16),
                   )
                 ],
               )),

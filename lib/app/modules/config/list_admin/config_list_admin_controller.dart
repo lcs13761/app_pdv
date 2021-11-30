@@ -21,6 +21,11 @@ class ConfigListAdminController extends GetxController {
     await adminList();
   }
 
+  Future refreshList() async{
+      users.clear();
+      await adminList();
+  }
+
   Future adminList() async{
     inLoading.value = true;
     List _response = await user.index();

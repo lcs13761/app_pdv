@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:lustore/app/model/product.dart';
 import 'package:lustore/app/model/sale.dart';
 
 class HomeListerSalesProductsController extends GetxController {
 
+  final store = GetStorage();
   RxList products = [].obs;
   NumberFormat formatter = NumberFormat.simpleCurrency();
   TextEditingController qts = TextEditingController();
@@ -25,14 +27,18 @@ class HomeListerSalesProductsController extends GetxController {
   }
 
     _saleProduct(_product){
+      print(_product);
         products.addAll(_product);
     }
 
    actionProductSale(index) async{
+
         if(action == "update"){
-          sale.product = Product(id: products[index]["id"],qts: int.parse(qts.text));
+          sale.salesman = store.read('email') ?? 'system';
+          sale.qts = int.parse(qts.text) < 1 ? 1 : int.parse(qts.text);
+          sale.product = Product(id: products[index]["id"]);
           var _response  = await sale.update(sale,products[index]["id"]);
-          if(_response["result"].length != 0){
+          if(_response == true){
            var  _update = products[index];
            _update["qts"] = int.parse(qts.text);
            products[index] = _update;
@@ -40,7 +46,7 @@ class HomeListerSalesProductsController extends GetxController {
         }
 
         if(action == "delete"){
-            var _response = await sale.destroy(products[index]["id"].toString());
+            var _response = await sale.destroy(products[index]["id"]);
             if(_response != true){
               return;
             }

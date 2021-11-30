@@ -20,7 +20,7 @@ class ApiReport  {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      return jsonDecode(jsonEncode(response.body));
+      return jsonDecode(response.body);
     }
   }
 
